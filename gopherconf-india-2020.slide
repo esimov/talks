@@ -1,0 +1,21 @@
+Face detection with Go
+Gopherconf India 2020
+
+Endre Simo
+https://esimov.com
+https://github.com/esimov
+https://twitter/simo_endre
+
+* Agenda
+- What is Pigo? The reasons I have developed
+- Pigo and GoCV (OpenCV) comparision
+- A general overview of the library and its features
+- Possible use cases and integrations
+- Real time demos
+- Running the Go based face detector from Python as a shared library
+- Porting to Webassembly (WASM)
+
+* Thank yo
+: [[https://esimov.com][https://esimov.com]]
+: [[https://github.com/esimov][https://github.com/esimov]]
+: [[https://twitter/simo_endre][https://twitter/simo_endre]]
