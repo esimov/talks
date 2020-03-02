@@ -69,8 +69,8 @@ func NewCanvas() *Canvas {
 	c.doc = c.window.Get("document")
 	c.body = c.doc.Get("body")
 
-	c.windowSize.width = 640
-	c.windowSize.height = 480
+	c.windowSize.width = 1280
+	c.windowSize.height = 720
 
 	c.canvas = c.doc.Call("createElement", "canvas")
 	c.canvas.Set("width", js.ValueOf(c.windowSize.width))
@@ -262,7 +262,7 @@ func (c *Canvas) drawDetection(dets [][]int) {
 
 					width, height := float64(curImgWidth)*imgScale, float64(curImgHeight)*imgScale
 					tx := row - int(width/2)
-					ty := col - int(height/2)
+					ty := leftPupil.Row + (leftPupil.Row-rightPupil.Row)/2 - int(height/2)
 
 					c.ctx.Call("save")
 					c.ctx.Call("translate", js.ValueOf(tx).Int(), js.ValueOf(ty).Int())
