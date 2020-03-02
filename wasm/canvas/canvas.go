@@ -11,7 +11,7 @@ import (
 	"syscall/js"
 	"time"
 
-	"github.com/esimov/pigo/wasm/detector"
+	"github.com/esimov/gopher-conf/wasm/detector"
 )
 
 // Canvas struct holds the Javascript objects needed for the Canvas creation
@@ -48,8 +48,8 @@ type point struct {
 var (
 	images = make([]js.Value, 6)
 	files  = []string{
-		"/images/sunglasses.png",
 		"/images/neon-yellow.png",
+		"/images/sunglasses.png",
 		"/images/neon-green.png",
 		"/images/carnival.png",
 		"/images/carnival2.png",
@@ -96,9 +96,6 @@ func (c *Canvas) Render() {
 		img := c.loadImage(file)
 		images[i] = js.Global().Call("eval", "new Image()")
 		images[i].Set("src", "data:image/png;base64,"+img)
-		if i == 0 {
-			fmt.Println(img)
-		}
 	}
 
 	curImgWidth = js.ValueOf(images[0].Get("naturalWidth")).Int()
@@ -254,12 +251,7 @@ func (c *Canvas) drawDetection(dets [][]int) {
 
 				if p1.x != 0 && p2.y != 0 {
 					// Calculate the lean angle between the pupils.
-					//angle := math.Atan2(float64(p2.y-p1.y), float64(p2.x-p1.x)) * 180 / math.Pi
-					//fmt.Println(angle)
-					c.ctx.Call("drawImage", images[imgIdx], 0, 0)
-
-					c.Log(js.ValueOf(curImgWidth), js.ValueOf(curImgHeight))
-
+					angle := 1 - (math.Atan2(float64(p2.y-p1.y), float64(p2.x-p1.x)) * 180 / math.Pi / 90)
 					if scale < curImgWidth || scale < curImgHeight {
 						if curImgHeight > curImgWidth {
 							imgScale = float64(scale) / float64(curImgHeight)
@@ -267,9 +259,19 @@ func (c *Canvas) drawDetection(dets [][]int) {
 							imgScale = float64(scale) / float64(curImgWidth)
 						}
 					}
-					c.Log(imgScale)
+
 					width, height := float64(curImgWidth)*imgScale, float64(curImgHeight)*imgScale
-					c.Log(width, height)
+					tx := row - int(width/2)
+					ty := col - int(height/2)
+
+					c.ctx.Call("save")
+					c.ctx.Call("translate", js.ValueOf(tx).Int(), js.ValueOf(ty).Int())
+					c.ctx.Call("rotate", js.ValueOf(angle).Float())
+					c.ctx.Call("drawImage", images[imgIdx],
+						js.ValueOf(0).Int(), js.ValueOf(0).Int(),
+						js.ValueOf(width).Int(), js.ValueOf(height).Int(),
+					)
+					c.ctx.Call("restore")
 				}
 
 				if c.flploc {
