@@ -37,8 +37,9 @@ type Canvas struct {
 	video     js.Value
 
 	showPupil  bool
+	showFace   bool
+	showMask   bool
 	drawCircle bool
-	flploc     bool
 }
 
 type point struct {
@@ -80,8 +81,9 @@ func NewCanvas() *Canvas {
 
 	c.ctx = c.canvas.Call("getContext", "2d")
 	c.showPupil = true
+	c.showFace = true
+	c.showMask = false
 	c.drawCircle = false
-	c.flploc = false
 
 	det = detector.NewDetector()
 	return &c
@@ -216,16 +218,18 @@ func (c *Canvas) drawDetection(dets [][]int) {
 
 	for i := 0; i < len(dets); i++ {
 		if dets[i][3] > 50 {
+			row, col, scale := dets[i][1], dets[i][0], dets[i][2]
 			c.ctx.Call("beginPath")
 			c.ctx.Set("lineWidth", 3)
 			c.ctx.Set("strokeStyle", "red")
 
-			row, col, scale := dets[i][1], dets[i][0], dets[i][2]
-			if c.drawCircle {
-				c.ctx.Call("moveTo", row+int(scale/2), col)
-				c.ctx.Call("arc", row, col, scale/2, 0, 2*math.Pi, true)
-			} else {
-				c.ctx.Call("rect", row-scale/2, col-scale/2, scale, scale)
+			if c.showFace {
+				if c.drawCircle {
+					c.ctx.Call("moveTo", row+int(scale/2), col)
+					c.ctx.Call("arc", row, col, scale/2, 0, 2*math.Pi, true)
+				} else {
+					c.ctx.Call("rect", row-scale/2, col-scale/2, scale, scale)
+				}
 			}
 			c.ctx.Call("stroke")
 
@@ -249,7 +253,7 @@ func (c *Canvas) drawDetection(dets [][]int) {
 				}
 				c.ctx.Call("stroke")
 
-				if p1.x != 0 && p2.y != 0 {
+				if c.showMask && (p1.x != 0 && p2.y != 0) {
 					// Calculate the lean angle between the pupils.
 					angle := 1 - (math.Atan2(float64(p2.y-p1.y), float64(p2.x-p1.x)) * 180 / math.Pi / 90)
 					if scale < curImgWidth || scale < curImgHeight {
@@ -273,19 +277,6 @@ func (c *Canvas) drawDetection(dets [][]int) {
 					)
 					c.ctx.Call("restore")
 				}
-
-				if c.flploc {
-					flps := det.DetectLandmarkPoints(leftPupil, rightPupil)
-
-					c.ctx.Call("beginPath")
-					c.ctx.Set("fillStyle", "rgb(0, 255, 0)")
-					for _, flp := range flps {
-						col, row, scale = flp[1], flp[0], flp[2]/7
-						c.ctx.Call("moveTo", row+flp[2]/7, col)
-						c.ctx.Call("arc", row, col, scale, 0, 2*math.Pi, false)
-					}
-					c.ctx.Call("fill")
-				}
 			}
 		}
 	}
@@ -296,16 +287,25 @@ func (c *Canvas) detectKeyPress() {
 	keyEventHandler := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		keyCode := args[0].Get("key")
 		switch {
-		case keyCode.String() == "s":
-			c.showPupil = !c.showPupil
-		case keyCode.String() == "c":
-			c.drawCircle = !c.drawCircle
-		case keyCode.String() == "f":
-			c.flploc = !c.flploc
+		case keyCode.String() == "q":
+			c.showFace = !c.showFace
 		case keyCode.String() == "e":
+			c.showPupil = !c.showPupil
+		case keyCode.String() == "a":
+			c.drawCircle = !c.drawCircle
+		case keyCode.String() == "r":
+			c.showMask = !c.showMask
+		case keyCode.String() == "w":
 			imgIdx++
 			if imgIdx > len(images)-1 {
 				imgIdx = 0
+			}
+			curImgWidth = js.ValueOf(images[imgIdx].Get("naturalWidth")).Int()
+			curImgHeight = js.ValueOf(images[imgIdx].Get("naturalHeight")).Int()
+		case keyCode.String() == "s":
+			imgIdx--
+			if imgIdx < 0 {
+				imgIdx = len(images) - 1
 			}
 			curImgWidth = js.ValueOf(images[imgIdx].Get("naturalWidth")).Int()
 			curImgHeight = js.ValueOf(images[imgIdx].Get("naturalHeight")).Int()
