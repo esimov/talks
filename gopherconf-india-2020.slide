@@ -7,15 +7,46 @@ https://github.com/esimov
 https://twitter/simo_endre
 
 * Agenda
-- What is Pigo? The reasons I have developed
+- What is Pigo? Why it has been developed?
+- Key features
+- Technical overview
 - Pigo and GoCV (OpenCV) comparision
-- A general overview of the library and its features
-- Possible use cases and integrations
+- Use cases and integrations
 - Real time demos
-- Running the Go based face detector from Python as a shared library
+- Running the face detector from Python as shared library
 - Porting to Webassembly (WASM)
 
-* Thank yo
-: [[https://esimov.com][https://esimov.com]]
-: [[https://github.com/esimov][https://github.com/esimov]]
-: [[https://twitter/simo_endre][https://twitter/simo_endre]]
+* What is Pigo?
+.image assets/pigo_logo.png 500 _
+
+* What is Pigo? Why it has been developed?
+- Computer vision and machine learning library for face detection, pupils/eyes localization and facial landmark points detection
+- The only face detection library in the Go ecosystem developed 100% in Go
+- The implementation is based on _Pixel_ _Intensity_ _Comparison-based_ _Object_ _detection_ paper
+
+*Why* *it* *has* *been* *developed?*
+
+- Installing OpenCV sometimes can be daunting
+- OpenCV is huge, impossible to deploy it on small platforms where space constraints are important
+
+: All the existing libraries in the Go ecosystem are actually bindings to or wrappers around other well known machine learning and computer vision libraries developed mostly in C. Bindings are not cost effective. But more on this topic later.
+: There is no need to install platform dependent libraries, no need to compile and build a giant and monolithic OpenCV library only for face detection.
+
+* Key features
+
+What are the benefits of using Pigo over other existing solutions? Just to name a few of them:
+
+- Very lightweight, no requirements for 3rd party modules and external libraries
+- Platform independent, one single executable
+- Simple and elegant API
+- High processing speed
+- There is no need for image preprocessing prior detection
+- The face detection is based on pixel intensity comparison encoded in the binary file tree structure
+- Fast detection of in-plane rotated faces
+- Pupils/eyes localization
+- Facial landmark points detection
+
+* Technical overview
+
+* .
+-
