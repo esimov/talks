@@ -18,15 +18,15 @@ https://twitter/simo_endre
 - Running the face detector from Python as shared library
 - Porting to Webassembly (WASM)
 
-* What is Pigo?
-.image assets/pigo_logo.png 500 _
-
 * What is Pigo? Why it has been developed?
+
+* What is Pigo?
+.image assets/pigo_logo.png 300 _
 - Computer vision and machine learning library for face detection, pupils/eyes localization and facial landmark points detection
 - The only face detection library in the Go ecosystem developed 100% in Go
 - The implementation is based on _Pixel_ _Intensity_ _Comparison-based_ _Object_ _detection_ paper
 
-*Why* *it* *has* *been* *developed?*
+* Why it has been developed?
 
 - Installing OpenCV sometimes can be daunting
 - OpenCV is huge, impossible to deploy it on small platforms where space constraints are important
@@ -57,7 +57,7 @@ What are the benefits of using Pigo over other existing solutions? Just to name 
 - Because the cascades are encoded into a binary tree structure they first need to be unpacked.
 - An image region is considered being face if it passes all the cascade members. Since this process is limited to a relatively small number of regions, this gains high computation speed.
 - During the decision tree scanning each detection is flagged with a detection score.
-- An image region is considered as face if the detection score is above a certain threshold (~ 0.995)
+- An image region is considered as face if the detection score is above a certain threshold (*~0.995*)
 
 * Technical overview
 - Due to the noisiness of the underlying pixel data, the detector might produce overlaps in detections.
@@ -81,3 +81,16 @@ What are the benefits of using Pigo over other existing solutions? Just to name 
 
 * End result
 .image assets/pigo_clustering-1024x819.png 550 _
+
+* Pigo and GoCV (OpenCV) comparision
+
+* Benchmark results
+    BenchmarkGoCV-4   	       3	 414122553 ns/op	     704 B/op	       1 allocs/op
+    BenchmarkPIGO-4   	      10	 173664832 ns/op	       0 B/op	       0 allocs/op
+    PASS
+    ok  	github.com/esimov/gocv-test	4.530s
+
+.link https://github.com/esimov/pigo-gocv-benchmark
+
+: To have a more accurate benchmark and to measure only the execution time the `b.ResetTimer()` is called to reset the timer so the setup is not counted towards the benchmark.
+: For the above test we were using a sample image with a Nasa crew of 17 persons. Both of the libraries have returned exactly the same results, but Pigo was faster and also the memory allocation was way less compared to GoCV
