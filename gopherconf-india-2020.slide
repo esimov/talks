@@ -12,6 +12,8 @@ https://twitter/simo_endre
 - Technical overview
 - Pigo and GoCV (OpenCV) comparision
 - Use cases and integrations
+- Pupils/eyes localization
+- Facial landmark points detection
 - Real time demos
 - Running the face detector from Python as shared library
 - Porting to Webassembly (WASM)
@@ -48,5 +50,34 @@ What are the benefits of using Pigo over other existing solutions? Just to name 
 
 * Technical overview
 
-* .
--
+* Technical overview
+- Pigo, like the Viola Jones face detection algorithm is also constructed around cascade decision trees, but the cascade classifier is in binary format
+- The role of a classifier is to tell if a face is present in the current region or not
+- The classifier consists of a decision tree, where the results of pixel intensity comparison test are in binary format.
+- Because the cascades are encoded into a binary tree structure they first need to be unpacked.
+- An image region is considered being face if it passes all the cascade members. Since this process is limited to a relatively small number of regions, this gains high computation speed.
+- During the decision tree scanning each detection is flagged with a detection score.
+- An image region is considered as face if the detection score is above a certain threshold (~ 0.995)
+
+* Technical overview
+- Due to the noisiness of the underlying pixel data, the detector might produce overlaps in detections.
+.image assets/pigo_output_without_clustering-1024x819.png 300 _
+- The cascade regions are clustered together by aplying an *IoU* (Intersection over Union) formula over the detection results.
+
+* Technical overview
+    sort.Sort(det(detections))
+
+    calcIoU := func(det1, det2 Detection) float64 {
+        // Unpack the position and size of each detection.
+        r1, c1, s1 := float64(det1.Row), float64(det1.Col), float64(det1.Scale)
+        r2, c2, s2 := float64(det2.Row), float64(det2.Col), float64(det2.Scale)
+
+        overRow := math.Max(0, math.Min(r1+s1/2, r2+s2/2)-math.Max(r1-s1/2, r2-s2/2))
+        overCol := math.Max(0, math.Min(c1+s1/2, c2+s2/2)-math.Max(c1-s1/2, c2-s2/2))
+
+        // Return intersection over union.
+        return overRow * overCol / (s1*s1 + s2*s2 - overRow*overCol)
+    }
+
+* End result
+.image assets/pigo_clustering-1024x819.png 550 _
