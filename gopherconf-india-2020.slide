@@ -66,7 +66,7 @@ What are the benefits of using Pigo over other existing solutions? Just to name 
 - Read prediction from tree's leaf nodes.
 
 * Unpacking result
-In the end we should get something like this:
+In the end we should get a cascade with the following structure:
 
         return &PuplocCascade{
             stages:    stages,
