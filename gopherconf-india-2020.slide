@@ -7,7 +7,7 @@ https://github.com/esimov
 https://twitter/simo_endre
 
 * Agenda
-- What is Pigo? Why it has been developed?
+- What is Pigo?
 - Key features
 - Technical overview
 - Pigo and GoCV (OpenCV) comparision
@@ -18,7 +18,7 @@ https://twitter/simo_endre
 - Running the face detector from Python as shared library
 - Porting to Webassembly (WASM)
 
-* What is Pigo? Why it has been developed?
+* What is Pigo?
 
 * What is Pigo?
 .image assets/pigo_logo.png 300 _
