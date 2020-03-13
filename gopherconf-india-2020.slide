@@ -65,7 +65,7 @@ What are the benefits of using Pigo over other existing solutions? Just to name 
 - Traverse all the stages of the binary tree
 - Read prediction from tree's leaf nodes.
 
-* Unpacking result
+* Unpacking the result
 In the end we should get a cascade with the following structure:
 
         return &PuplocCascade{
@@ -114,7 +114,7 @@ _Note_: for in plane rotated faces we are applying the same formula only that we
 .image assets/pigo_output_without_clustering-1024x819.png 300 _
 - The cascade regions are clustered together by aplying an *IoU* (Intersection over Union) formula over the detection results.
 
-* Intersection over union method
+* The intersection over union method
     sort.Sort(det(detections))
 
     calcIoU := func(det1, det2 Detection) float64 {
@@ -144,3 +144,31 @@ _Note_: for in plane rotated faces we are applying the same formula only that we
 
 : To have a more accurate benchmark and to measure only the execution time the `b.ResetTimer()` is called to reset the timer so the setup is not counted towards the benchmark.
 : For the above test we were using a sample image with a Nasa crew of 17 persons. Both of the libraries have returned exactly the same results, but Pigo was faster and also the memory allocation was way less compared to GoCV
+
+* Use cases and integrations
+: Pigo has been successfully integrated into the OpenFaaS platform, easing you out from all the tedious work requested by the installation, configuration of the Go language etc., making possible to expose it as an FaaS function. This means once you have an OpenFaaS platform installed on your local machine with only two commands you have a fully working docker image where Pigo can be used as a serverless function.
+
+* OpenFaaS integration
+.image assets/pigo_openfaas.png 350 _
+
+* OpenFaaS integration
+.image assets/pigo_openfaas_result.jpg 300 _
+.link https://github.com/esimov/pigo-openfaas
+
+* OpenFaaS intergation
+.image assets/pigo_openfaas-blur.png 350 _
+
+* OpenFaaS integration
+.image assets/pigo_openfaas-blur_result.jpg 400 _
+.link https://github.com/esimov/pigo-openfaas-faceblur
+.link https://github.com/esimov/stackblur-go
+
+* Other integration
+.image assets/caire-example.png
+
+Avoiding face deformation in Caire
+.link https://github.com/esimov/caire
+
+
+* Pupils/eyes localization
+.image assets/pigo_puploc.png 550 _
