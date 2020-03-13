@@ -207,3 +207,8 @@ Same formula for left and rigth eye detection. The sign is flipped on the right 
         Scale:    float32(face.Scale) * 0.25,
         Perturbs: perturb,
     }
+
+* Facial landmark points detection
+
+* Facial landmark points detection
+.image assets/pigo_landmark.png _ 550
