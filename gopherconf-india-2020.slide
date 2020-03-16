@@ -178,18 +178,17 @@ Avoiding face deformation in Caire
 - The implementation pretty much resambles with the face detection method but with few remarkable differences.
 : This means that the classifier used for the pupil/eyes detection is generated based on decision trees and the training data is recursively clustered in this fashion until some termination condition is met.
 - The detection method (as the face detection) is based on tree esembles.
-- Again, as on Pigo face detection, we use the pixel intensity comparision test in binary format in it's internal nodes.
-- There is a problem though: the output of the regression trees might be noisy
+- As on Pigo face detection, the detection is based on a simple binary test.
+- The output of the regression trees might be noisy
 - We introduce a random perturbation factor during runtime to outweigh the false positive rates on detection
 : There is a problem though: the output of the regression trees might be noisy and unreliable in some special cases like when we are feeding some low quality video frames or images. This is the reason why the method introduces a random perturbation factor during runtime to outweigh the false positive rates on detection. Later on, after the detected face region is classified we sort the perturbations in ascendant order and retrieve the median value of the resulted vector.
 .image assets/puploc_perturbation.jpg 200 _
 
-* Short overview
+* Sort the perturbations
 After the face region has been classified we sort the perturbations in ascendant order.
 .image assets/puploc_detector.png 530 _
 
-* Short overview
-
+* Left/right face detection
 Same formula for left and rigth eye detection. The sign is flipped on the right eye.
 
     // left eye
