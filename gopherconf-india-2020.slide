@@ -16,7 +16,7 @@ https://twitter/simo_endre
 - Facial landmark points detection
 - Real time demos
 - Running the face detector from Python as shared library
-- Porting to Webassembly (WASM)
+- Porting Pigo to Webassembly (WASM)
 
 * What is Pigo?
 
@@ -178,7 +178,7 @@ Avoiding face deformation in Caire
 - The implementation pretty much resambles with the face detection method but with few remarkable differences.
 : This means that the classifier used for the pupil/eyes detection is generated based on decision trees and the training data is recursively clustered in this fashion until some termination condition is met.
 - The detection method (as the face detection) is based on tree esembles.
-- As on Pigo face detection, the detection is based on a simple binary test.
+- As on Pigo face detection, the detection is based on the same pixel intensity binary test.
 - The output of the regression trees might be noisy
 - We introduce a random perturbation factor during runtime to outweigh the false positive rates on detection
 : There is a problem though: the output of the regression trees might be noisy and unreliable in some special cases like when we are feeding some low quality video frames or images. This is the reason why the method introduces a random perturbation factor during runtime to outweigh the false positive rates on detection. Later on, after the detected face region is classified we sort the perturbations in ascendant order and retrieve the median value of the resulted vector.
@@ -211,3 +211,85 @@ Same formula for left and rigth eye detection. The sign is flipped on the right 
 
 * Facial landmark points detection
 .image assets/pigo_landmark.png _ 550
+
+* Detection method
+- The landmark points are detected based on the results returned by the pupil localization function
+
+        dist1 := (leftEye.Row - rightEye.Row) * (leftEye.Row - rightEye.Row)
+        dist2 := (leftEye.Col - rightEye.Col) * (leftEye.Col - rightEye.Col)
+        dist := math.Sqrt(float64(dist1 + dist2))
+
+        row := float64(leftEye.Row+rightEye.Row)/2.0 + 0.25*dist
+        col := float64(leftEye.Col+rightEye.Col)/2.0 + 0.15*dist
+        scale := 3.0 * dist
+
+        flploc = &Puploc{
+            Row:      int(row),
+            Col:      int(col),
+            Scale:    float32(scale),
+            Perturbs: perturb,
+        }
+
+* Compute the right landmark points
+This can be achieved by:
+
+1.) flipping the sign of the column coordinate in tree nodes
+
+        if flipV {
+            c1 = min(ncols-1, max(0, (256*int(c)+int(-plc.treeCodes[root+4*idx+1])*int(round(float64(s))))>>8))
+            c2 = min(ncols-1, max(0, (256*int(c)+int(-plc.treeCodes[root+4*idx+3])*int(round(float64(s))))>>8))
+        } else {
+            c1 = min(ncols-1, max(0, (256*int(c)+int(plc.treeCodes[root+4*idx+1])*int(round(float64(s))))>>8))
+            c2 = min(ncols-1, max(0, (256*int(c)+int(plc.treeCodes[root+4*idx+3])*int(round(float64(s))))>>8))
+        }
+
+2.) flipping the sign in the column coordinate for each binary test
+
+        if flipV {
+            dc += -plc.treePreds[lutIdx+1]
+        } else {
+            dc += plc.treePreds[lutIdx+1]
+        }
+
+* Real time demos
+
+* Running the face detector from Python as shared library
+- Go is missing a well founded and generally available webcam library
+: The Go ecosystem is missing a well-founded and generally available library for accessing the webcam. The only library I found targeted the Linux environment, which obviously was not an option. So in order to prove the library real-time face detection capabilities, I opted to create the demos in Python and communicate with the Go code (the detection part has been written in Go) through shared object (.so) libraries
+- The idea is to transfer the Go face detection results to Python as a shared object (`.so`) library
+- A few things we need to take care:
+
+    The exported function should be annotated with the //export statement.
+    The source must import the pseudo C package.
+    An empty main function should be declared.
+    The package must be a main package.
+
+- In Python the *Ctype* library is used to interoperate with the Go code trough *cgo*
+- It provides C compatible data types, and allows calling functions in DLLs or shared libraries.
+: Using the library at first might be intimidating since it heavily relies on the C structs and types. Also accessing the Go data is possible exclusively trough pointer interfaces. This means we need to be aware about the data type, the buffer length and the maximum capacity of the transferred Go slice. In fact the slice will be a pointer pointing to a data structure.
+
+* Limitations
+
+- In Go is not possible transfer a 2D array trough an array pointer.
+- The trick is to convert the 2D array to a 1D array.
+    |-> we delimit each detection group
+    |-> introduce as a first slice element the number of detected faces
+- In Python with the help of *numpy* we transform it to the desired shape.
+- In the end we should obtain something like below:
+
+    [2 0 0 0 0 272 297 213 41 1 248 258 27 41 0 248 341 27 41 0 238 599 72 25 1 230 587 9 25 0 233 616 9 25 0]
+
+where the first value represents the number of detected faces
+
+: In the end we should obtain something like below, where the first value represent the number of the detected faces and the rest of the values are the x and y coordinates and the scale factor of the detected faces, respectively pupils.
+
+* Some caveats
+
+- The cost using cgo can be substantial
+- C and Go exists in two different universe, they interoperate trough cgo. This is not costs effective.
+- Your system C compiler has to be invoked for every C file in the package.
+- The individual compilation units are combined together into a single .o file.
+- Slower build times
+- Ctype introduce another latency factor
+
+* Porting Pigo to Webassembly (WASM)
