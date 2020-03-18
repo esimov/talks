@@ -264,31 +264,30 @@ This can be achieved by:
     An empty main function should be declared.
     The package must be a main package.
 
-- In Python the *Ctype* library is used to interoperate with the Go code trough *cgo*
+- In Python the *Ctype* library is used to interoperate with the Go code through *cgo*
 - It provides C compatible data types, and allows calling functions in DLLs or shared libraries.
-: Using the library at first might be intimidating since it heavily relies on the C structs and types. Also accessing the Go data is possible exclusively trough pointer interfaces. This means we need to be aware about the data type, the buffer length and the maximum capacity of the transferred Go slice. In fact the slice will be a pointer pointing to a data structure.
+: Using the library at first might be intimidating since it heavily relies on the C structs and types. Also accessing the Go data is possible exclusively through pointer interfaces. This means we need to be aware about the data type, the buffer length and the maximum capacity of the transferred Go slice. In fact the slice will be a pointer pointing to a data structure.
 
 * Limitations
 
-- In Go is not possible transfer a 2D array trough an array pointer.
+- In Go is not possible transfer a 2D array over an array pointer.
 - The trick is to convert the 2D array to a 1D array.
-    |-> we delimit each detection group
+    |-> delimit each detection group
     |-> introduce as a first slice element the number of detected faces
-- In Python with the help of *numpy* we transform it to the desired shape.
+- Using the *numpy* library we transform it to the desired shape.
 - In the end we should obtain something like below:
 
     [2 0 0 0 0 272 297 213 41 1 248 258 27 41 0 248 341 27 41 0 238 599 72 25 1 230 587 9 25 0 233 616 9 25 0]
 
-where the first value represents the number of detected faces
+where the first value represents the number of detected faces and the rest are the *x*, *y* position and the *scale* factor
 
 : In the end we should obtain something like below, where the first value represent the number of the detected faces and the rest of the values are the x and y coordinates and the scale factor of the detected faces, respectively pupils.
 
 * Some caveats
 
 - The cost using cgo can be substantial
-- C and Go exists in two different universe, they interoperate trough cgo. This is not costs effective.
-- Your system C compiler has to be invoked for every C file in the package.
-- The individual compilation units are combined together into a single .o file.
+- C and Go exists in two different universe, they interoperate through cgo. This is not costs effective.
+- The C compiler has to be invoked for every C file in the package.
 - Slower build times
 - Ctype introduce another latency factor
 
