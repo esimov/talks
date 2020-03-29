@@ -82,7 +82,7 @@ func NewCanvas() *Canvas {
 	c.ctx = c.canvas.Call("getContext", "2d")
 	c.showPupil = true
 	c.showFace = true
-	c.showMask = true
+	c.showMask = false
 	c.drawCircle = false
 
 	det = detector.NewDetector()
