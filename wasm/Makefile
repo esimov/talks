@@ -16,6 +16,7 @@ all: wasm serve
 
 wasm:
 	GOOS=js GOARCH=wasm go build -o lib.wasm wasm.go
+	cp -f "$$(go env GOROOT)/misc/wasm/wasm_exec.js" ./js/
 
 serve:
 	$(BROWSER) 'http://localhost:5000'
