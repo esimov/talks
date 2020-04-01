@@ -14,9 +14,9 @@ https://twitter/simo_endre
 - Use cases and integrations
 - Pupils/eyes localization
 - Facial landmark points detection
-- Real time demos
-- Running the face detector from Python as shared library
+- Pigo as a shared library
 - Porting Pigo to Webassembly (WASM)
+- Demo time
 
 * What is Pigo?
 
@@ -251,7 +251,7 @@ This can be achieved by:
             dc += plc.treePreds[lutIdx+1]
         }
 
-* Real time demos
+* Pigo as a shared library
 
 * Running the face detector from Python as shared library
 - Go is missing a well founded and generally available webcam library
@@ -423,3 +423,5 @@ The wasm file can be referenced in the main html file.
             cp -f "$$(go env GOROOT)/misc/wasm/wasm_exec.js" ./js/
             GOOS=js GOARCH=wasm go build -o lib.wasm wasm.go
 
+
+* Demo time
