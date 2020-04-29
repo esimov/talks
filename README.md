@@ -1,3 +1,3 @@
 # gopher-conf
 
-Gopherconf India presentation
+Gopherconf presentation
