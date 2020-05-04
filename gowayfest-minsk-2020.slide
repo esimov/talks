@@ -317,6 +317,9 @@ where the first value represents the number of detected faces and the rest are t
 
 * Porting Pigo to Webassembly (WASM)
 
+* Pigo and Webassembly
+.image assets/pigowasm.png 500 _
+
 * Motivation
 
 - Running the real time version of Pigo in Python as shared object does not showed the library pure performance
