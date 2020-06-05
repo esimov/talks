@@ -7,6 +7,7 @@ https://github.com/esimov
 https://twitter/simo_endre
 
 * Agenda
+- About me
 - What is Pigo?
 - Key features
 - Technical overview
@@ -17,6 +18,15 @@ https://twitter/simo_endre
 - Pigo as a shared library
 - Porting Pigo to Webassembly (WASM)
 - Demo time
+- What's next?
+
+* About me
+
+* I am ...
+- A software developer and open source enthusiast, tackling with image processing, computer vision, machine learning and procedural graphics as side projects
+- I like clean and readable code
+- Performance and code optimization does matter a lot for me
+- I consider the goroutines, concurrency primitives and communications trough channels the most appealing parts of the Go language
 
 * What is Pigo?
 
@@ -425,3 +435,15 @@ The wasm file can be referenced in the main html file.
 
 
 * Demo time
+- New repository to showcase WASM demos using the Pigo libray (this is continuously updated)
+.link https://github.com/esimov/pigo-wasm-demos
+
+* Demo showcase
+.image assets/wasm-demo-1.gif 240 _
+.image assets/wasm-demo-2.gif 280 _
+
+* Real time demos
+
+* What's next?
+- Image features detection and matching (to detect similarities inside images)
+- This can be a starting point for facial recognition
