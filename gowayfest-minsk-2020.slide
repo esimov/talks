@@ -23,10 +23,10 @@ https://twitter/simo_endre
 * About me
 
 * I am ...
-- A software developer and open source enthusiast, tackling with image processing, computer vision, machine learning and procedural graphics as side projects
-- I like clean and readable code
-- Performance and code optimization does matter a lot for me
-- I consider the goroutines, concurrency primitives and communications trough channels the most appealing parts of the Go language
+- Software developer and open source enthusiast, tackling with image processing, computer vision, machine learning and procedural graphics as side projects
+- I like the clean and readable code
+- Performance and code optimization addict
+- I consider the concurrency communication model (CSP) the most appealing parts of the Go language
 
 * What is Pigo?
 
@@ -435,7 +435,7 @@ The wasm file can be referenced in the main html file.
 
 
 * Demo time
-- New repository to showcase WASM demos using the Pigo libray (this is continuously updated)
+- New repository exists to showcase WASM demos using the Pigo libray (this is continuously updated)
 .link https://github.com/esimov/pigo-wasm-demos
 
 * Demo showcase
