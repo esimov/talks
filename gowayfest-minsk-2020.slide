@@ -38,6 +38,11 @@ https://twitter/simo_endre
 
 * Why it has been developed?
 
+- All of the existing face detection libraries developed in Go are actually bindings (wrappers) around some C/C++ libraries
+- Bindings (using the cgo) most of the times are not cost effective
+- Compiling a C library to Go results in slower build times
+- Cross compilation is almost impossible
+- The desire of a single binary file is just a desire
 - Installing OpenCV sometimes can be daunting
 - OpenCV is huge, impossible to deploy it on small platforms where space constraints are important
 
