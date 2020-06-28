@@ -12,9 +12,9 @@ https://twitter/simo_endre
 - Key features
 - Technical overview
 - Pigo and GoCV (OpenCV) comparision
-- Use cases and integrations
 - Pupils/eyes localization
 - Facial landmark points detection
+- Use cases and integrations
 - Pigo as a shared library
 - Porting Pigo to Webassembly (WASM)
 - Demo time
@@ -160,30 +160,6 @@ _Note_: for in plane rotated faces we are applying the same formula only that we
 : To have a more accurate benchmark and to measure only the execution time the `b.ResetTimer()` is called to reset the timer so the setup is not counted towards the benchmark.
 : For the above test we were using a sample image with a Nasa crew of 17 persons. Both of the libraries have returned exactly the same results, but Pigo was faster and also the memory allocation was way less compared to GoCV
 
-* Use cases and integrations
-: Pigo has been successfully integrated into the OpenFaaS platform, easing you out from all the tedious work requested by the installation, configuration of the Go language etc., making possible to expose it as an FaaS function. This means once you have an OpenFaaS platform installed on your local machine with only two commands you have a fully working docker image where Pigo can be used as a serverless function.
-
-* OpenFaaS integration
-.image assets/pigo_openfaas.png 350 _
-
-* OpenFaaS integration
-.image assets/pigo_openfaas_result.jpg 300 _
-.link https://github.com/esimov/pigo-openfaas
-
-* OpenFaaS intergation
-.image assets/pigo_openfaas-blur.png 350 _
-
-* OpenFaaS integration
-.image assets/pigo_openfaas-blur_result.jpg 400 _
-.link https://github.com/esimov/pigo-openfaas-faceblur
-.link https://github.com/esimov/stackblur-go
-
-* Other integration
-.image assets/caire-example.png
-
-Avoiding face deformation in Caire
-.link https://github.com/esimov/caire
-
 * Pupils/eyes localization
 
 * Pupils/eyes localization
@@ -265,6 +241,30 @@ This can be achieved by:
         } else {
             dc += plc.treePreds[lutIdx+1]
         }
+
+* Use cases and integrations
+: Pigo has been successfully integrated into the OpenFaaS platform, easing you out from all the tedious work requested by the installation, configuration of the Go language etc., making possible to expose it as an FaaS function. This means once you have an OpenFaaS platform installed on your local machine with only two commands you have a fully working docker image where Pigo can be used as a serverless function.
+
+* OpenFaaS integration
+.image assets/pigo_openfaas.png 350 _
+
+* OpenFaaS integration
+.image assets/pigo_openfaas_result.jpg 300 _
+.link https://github.com/esimov/pigo-openfaas
+
+* OpenFaaS intergation
+.image assets/pigo_openfaas-blur.png 350 _
+
+* OpenFaaS integration
+.image assets/pigo_openfaas-blur_result.jpg 400 _
+.link https://github.com/esimov/pigo-openfaas-faceblur
+.link https://github.com/esimov/stackblur-go
+
+* Other integration
+.image assets/caire-example.png
+
+Avoiding face deformation in Caire
+.link https://github.com/esimov/caire
 
 * Pigo as a shared library
 
