@@ -144,6 +144,50 @@ _Note_: for in plane rotated faces we are applying the same formula only that we
         return overRow * overCol / (s1*s1 + s2*s2 - overRow*overCol)
     }
 
+* API usage
+- Simple and elegant API
+- Easy integration, cross platform interoperability
+- Posibility to export the detection results to a JSON file
+- Pipeline support
+
+    // Initialize the cascade parameters
+    cParams := pigo.CascadeParams{
+        MinSize:     20,
+        MaxSize:     1000,
+        ShiftFactor: 0.1,
+        ScaleFactor: 1.1,
+
+        ImageParams: pigo.ImageParams{
+            Pixels: pixels,
+            Rows:   rows,
+            Cols:   cols,
+            Dim:    cols,
+        },
+    }
+
+* API usage
+
+    pigo := pigo.NewPigo()
+    // Unpack the binary file. This will return the number of cascade trees,
+    // the tree depth, the threshold and the prediction from tree's leaf nodes.
+    classifier, err := pigo.Unpack(cascadeFile)
+    if err != nil {
+        log.Fatalf("Error reading the cascade file: %s", err)
+    }
+
+    angle := 0.0 // cascade rotation angle. 0.0 is 0 radians and 1.0 is 2*pi radians
+
+    // Run the classifier over the obtained leaf nodes and return the detection results.
+    // The result contains quadruplets representing the row, column, scale and detection score.
+    dets := classifier.RunCascade(cParams, angle)
+
+    // Calculate the intersection over union (IoU) of two clusters.
+    dets = classifier.ClusterDetections(dets, 0.2)
+
+- dets will return the coordinates of the detected faces, eyes and landmark points depending on the provided parameters
+
+    {"face":{"x":422,"y":336,"size":483},"eyes":[{"x":378,"y":267,"size":39},{"x":380,"y":432,"size":40}]}
+
 * End result
 .image assets/pigo_clustering-1024x819.png 550 _
 
@@ -168,16 +212,12 @@ _Note_: for in plane rotated faces we are applying the same formula only that we
 * Short overview
 - The implementation pretty much resambles with the face detection method but with few remarkable differences.
 : This means that the classifier used for the pupil/eyes detection is generated based on decision trees and the training data is recursively clustered in this fashion until some termination condition is met.
-- The detection method (as the face detection) is based on tree esembles.
-- As on Pigo face detection, the detection is based on the same pixel intensity binary test.
+- As on the face detection, the detection is based on the same pixel intensity binary test.
 - The output of the regression trees might be noisy
 - We introduce a random perturbation factor during runtime to outweigh the false positive rates on detection
 : There is a problem though: the output of the regression trees might be noisy and unreliable in some special cases like when we are feeding some low quality video frames or images. This is the reason why the method introduces a random perturbation factor during runtime to outweigh the false positive rates on detection. Later on, after the detected face region is classified we sort the perturbations in ascendant order and retrieve the median value of the resulted vector.
-.image assets/puploc_perturbation.jpg 200 _
-
-* Sort the perturbations
-After the face region has been classified we sort the perturbations in ascendant order.
-.image assets/puploc_detector.png 530 _
+.image assets/puploc_perturbation.jpg 160 _
+- After the face region has been classified we sort the perturbations in ascendant order.
 
 * Left/right face detection
 Same formula for left and rigth eye detection. The sign is flipped on the right eye.
