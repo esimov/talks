@@ -6,6 +6,14 @@ https://esimov.com
 https://github.com/esimov
 https://twitter/simo_endre
 
+* About me
+
+* I am ...
+- Software developer and open source enthusiast, tackling with image processing, computer vision, machine learning and procedural graphics as side projects
+- I like the clean and readable code
+- Performance and code optimization addict
+- I consider the concurrency communication model (CSP) the most appealing parts of the Go language
+
 * Agenda
 - About me
 - What is Pigo?
@@ -19,14 +27,6 @@ https://twitter/simo_endre
 - Porting Pigo to Webassembly (WASM)
 - Demo time
 - What's next?
-
-* About me
-
-* I am ...
-- Software developer and open source enthusiast, tackling with image processing, computer vision, machine learning and procedural graphics as side projects
-- I like the clean and readable code
-- Performance and code optimization addict
-- I consider the concurrency communication model (CSP) the most appealing parts of the Go language
 
 * What is Pigo?
 
