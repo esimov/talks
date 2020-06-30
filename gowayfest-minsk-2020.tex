@@ -58,20 +58,42 @@
 \section[slides]{slides}
 
 \begin{frame}[fragile]
+\frametitle{About me}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{I am ...}
+
+
+\begin{itemize}
+\item Software developer and open source enthusiast, tackling with image processing, computer vision, machine learning and procedural graphics as side projects
+\item I like the clean and readable code
+\item Performance and code optimization addict
+\item I consider the concurrency communication model (CSP) the most appealing parts of the Go language
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
 \frametitle{Agenda}
 
 
 \begin{itemize}
+\item About me
 \item What is Pigo?
 \item Key features
 \item Technical overview
 \item Pigo and GoCV (OpenCV) comparision
-\item Use cases and integrations
 \item Pupils/eyes localization
 \item Facial landmark points detection
+\item Use cases and integrations
 \item Pigo as a shared library
 \item Porting Pigo to Webassembly (WASM)
 \item Demo time
+\item What's next?
 \end{itemize}
 
 
@@ -108,6 +130,11 @@
 
 
 \begin{itemize}
+\item All of the existing face detection libraries developed in Go are actually bindings (wrappers) around some C/C++ libraries
+\item Bindings (using the cgo) most of the times are not cost effective
+\item Compiling a C library to Go results in slower build times
+\item Cross compilation is almost impossible
+\item The desire of a single binary file is just a desire
 \item Installing OpenCV sometimes can be daunting
 \item OpenCV is huge, impossible to deploy it on small platforms where space constraints are important
 \end{itemize}
@@ -307,6 +334,80 @@ calcIoU := func(det1, det2 Detection) float64 {
 \end{frame}
 
 \begin{frame}[fragile]
+\frametitle{API usage}
+
+
+\begin{itemize}
+\item Simple and elegant API
+\item Easy integration, cross platform interoperability
+\item Posibility to export the detection results to a JSON file
+\item Pipeline support
+\end{itemize}
+
+
+\begin{verbatim}
+// Initialize the cascade parameters
+cParams := pigo.CascadeParams{
+    MinSize:     20,
+    MaxSize:     1000,
+    ShiftFactor: 0.1,
+    ScaleFactor: 1.1,
+
+    ImageParams: pigo.ImageParams{
+        Pixels: pixels,
+        Rows:   rows,
+        Cols:   cols,
+        Dim:    cols,
+    },
+}
+
+\end{verbatim}
+
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{API usage}
+
+
+
+\begin{verbatim}
+pigo := pigo.NewPigo()
+// Unpack the binary file. This will return the number of cascade trees,
+// the tree depth, the threshold and the prediction from tree's leaf nodes.
+classifier, err := pigo.Unpack(cascadeFile)
+if err != nil {
+    log.Fatalf("Error reading the cascade file: %s", err)
+}
+
+angle := 0.0 // cascade rotation angle. 0.0 is 0 radians and 1.0 is 2*pi radians
+
+// Run the classifier over the obtained leaf nodes and return the detection results.
+// The result contains quadruplets representing the row, column, scale and detection score.
+dets := classifier.RunCascade(cParams, angle)
+
+// Calculate the intersection over union (IoU) of two clusters.
+dets = classifier.ClusterDetections(dets, 0.2)
+
+\end{verbatim}
+
+
+\begin{itemize}
+\item dets will return the coordinates of the detected faces, eyes and landmark points depending on the provided parameters
+\end{itemize}
+
+
+\begin{verbatim}
+{"face":{"x":422,"y":336,"size":483},"eyes":[{"x":378,"y":267,"size":39},{"x":380,"y":432,"size":40}]}
+
+\end{verbatim}
+
+
+
+\end{frame}
+
+\begin{frame}[fragile]
 \frametitle{End result}
 
 
@@ -346,93 +447,6 @@ ok      github.com/esimov/gocv-test    4.530s
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Use cases and integrations}
-
-
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{OpenFaaS integration}
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm,height=4cm]{assets/pigo_openfaas.png}
-\end{center}
-
-\end{figure}
-
-
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{OpenFaaS integration}
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=9cm,height=4cm]{assets/pigo_openfaas_result.jpg}
-\end{center}
-
-\end{figure}
-
-\myblue{\href{https://github.com/esimov/pigo-openfaas}{\texttt{github.com/esimov/pigo-openfaas}}}
-
-
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{OpenFaaS intergation}
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=9cm,height=4cm]{assets/pigo_openfaas-blur.png}
-\end{center}
-
-\end{figure}
-
-
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{OpenFaaS integration}
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=7cm,height=5cm]{assets/pigo_openfaas-blur_result.jpg}
-\end{center}
-
-\end{figure}
-
-\myblue{\href{https://github.com/esimov/pigo-openfaas-faceblur}{\texttt{github.com/esimov/pigo-openfaas-faceblur}}}
-
-\myblue{\href{https://github.com/esimov/stackblur-go}{\texttt{github.com/esimov/stackblur-go}}}
-
-
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Other integration}
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm,height=4cm]{assets/caire-example.png}
-\end{center}
-
-\end{figure}
-
-Avoiding face deformation in Caire
-
-
-\myblue{\href{https://github.com/esimov/caire}{\texttt{github.com/esimov/caire}}}
-
-
-\end{frame}
-
-\begin{frame}[fragile]
 \frametitle{Pupils/eyes localization}
 
 
@@ -461,35 +475,21 @@ Avoiding face deformation in Caire
 \end{itemize}
 
 \begin{itemize}
-\item The detection method (as the face detection) is based on tree esembles.
-\item As on Pigo face detection, the detection is based on the same pixel intensity binary test.
+\item As on the face detection, the detection is based on the same pixel intensity binary test.
 \item The output of the regression trees might be noisy
 \item We introduce a random perturbation factor during runtime to outweigh the false positive rates on detection
 \end{itemize}
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=9cm,height=2cm]{assets/puploc_perturbation.jpg}
+\includegraphics[width=7cm,height=2cm]{assets/puploc_perturbation.jpg}
 \end{center}
 
 \end{figure}
 
-
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Sort the perturbations}
-
-
-After the face region has been classified we sort the perturbations in ascendant order.
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm,height=7cm]{assets/puploc_detector.png}
-\end{center}
-
-\end{figure}
+\begin{itemize}
+\item After the face region has been classified we sort the perturbations in ascendant order.
+\end{itemize}
 
 
 \end{frame}
@@ -617,6 +617,93 @@ if flipV {
 \end{frame}
 
 \begin{frame}[fragile]
+\frametitle{Use cases and integrations}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{OpenFaaS integration}
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm,height=4cm]{assets/pigo_openfaas.png}
+\end{center}
+
+\end{figure}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{OpenFaaS integration}
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm,height=4cm]{assets/pigo_openfaas_result.jpg}
+\end{center}
+
+\end{figure}
+
+\myblue{\href{https://github.com/esimov/pigo-openfaas}{\texttt{github.com/esimov/pigo-openfaas}}}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{OpenFaaS intergation}
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm,height=4cm]{assets/pigo_openfaas-blur.png}
+\end{center}
+
+\end{figure}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{OpenFaaS integration}
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=7cm,height=5cm]{assets/pigo_openfaas-blur_result.jpg}
+\end{center}
+
+\end{figure}
+
+\myblue{\href{https://github.com/esimov/pigo-openfaas-faceblur}{\texttt{github.com/esimov/pigo-openfaas-faceblur}}}
+
+\myblue{\href{https://github.com/esimov/stackblur-go}{\texttt{github.com/esimov/stackblur-go}}}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Other integration}
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm,height=4cm]{assets/caire-example.png}
+\end{center}
+
+\end{figure}
+
+Avoiding face deformation in Caire
+
+
+\myblue{\href{https://github.com/esimov/caire}{\texttt{github.com/esimov/caire}}}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
 \frametitle{Pigo as a shared library}
 
 
@@ -739,6 +826,12 @@ return <-pointCh
 
 \begin{frame}[fragile]
 \frametitle{Porting Pigo to Webassembly (WASM)}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Pigo and Webassembly}
 
 
 \end{frame}
@@ -920,6 +1013,31 @@ wasm:
 
 \begin{frame}[fragile]
 \frametitle{Demo time}
+
+
+\begin{itemize}
+\item New repository exists to showcase WASM demos using the Pigo libray (this is continuously updated)
+\end{itemize}
+
+\myblue{\href{https://github.com/esimov/pigo-wasm-demos}{\texttt{github.com/esimov/pigo-wasm-demos}}}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Demo showcase}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{What's next?}
+
+
+\begin{itemize}
+\item Image features detection and matching (to detect similarities inside images)
+\item This can be a starting point for facial recognition
+\end{itemize}
 
 
 \end{frame}
