@@ -377,11 +377,12 @@ where the first value represents the number of detected faces and the rest are t
 
 * Motivation
 
-- Running the real time version of Pigo in Python as shared object does not showed the library pure performance
-- Webassembly is an emerging technology with a lot of potential
-- More and more projects are getting ported to Wasm
+- Running Pigo in Python as shared object does not showed the library pure performance
+- Webassembly is an emerging technology targeting the web browser and bringing almost native like performance
+- Many low level languages are already offer support for WASM (C, C++, Rust, Go etc.)
+- More and more projects are getting ported to WASM
 - Go already offer good Webassembly support trough the *syscall/js* package
-- Go *v1.11* was the first version targeting Wasm
+- Go *v1.11* was the first version targeting WASM
 - The API has gone through some refactorings and improvements to be stable starting from *v1.13*
 
 * Considerations to keep in mind
@@ -446,9 +447,9 @@ The *Render()* method will call the underlying JS render method:
             }
         }
 
-* Calling the wasm file
+* Calling the WASM file
 
-The wasm file can be referenced in the main html file.
+The WASM file can be referenced in the main html file.
 
         <script type="text/javascript">
             function fetchAndInstantiate(url, importObject) {
