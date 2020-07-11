@@ -831,21 +831,16 @@ return <-pointCh
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Pigo and Webassembly}
-
-
-\end{frame}
-
-\begin{frame}[fragile]
 \frametitle{Motivation}
 
 
 \begin{itemize}
-\item Running the real time version of Pigo in Python as shared object does not showed the library pure performance
-\item Webassembly is an emerging technology with a lot of potential
-\item More and more projects are getting ported to Wasm
+\item Running Pigo in Python as shared object does not showed the library pure performance
+\item Webassembly is an emerging technology targeting the web browser and bringing almost native like performance
+\item Many low level languages are already offer support for WASM (C, C++, Rust, Go etc.)
+\item More and more projects are getting ported to WASM
 \item Go already offer good Webassembly support trough the \textbf{syscall/js} package
-\item Go \textbf{v1.11} was the first version targeting Wasm
+\item Go \textbf{v1.11} was the first version targeting WASM
 \item The API has gone through some refactorings and improvements to be stable starting from \textbf{v1.13}
 \end{itemize}
 
@@ -956,10 +951,10 @@ func (c *Canvas) Render() {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Calling the wasm file}
+\frametitle{Calling the WASM file}
 
 
-The wasm file can be referenced in the main html file.
+The WASM file can be referenced in the main html file.
 
 
 
