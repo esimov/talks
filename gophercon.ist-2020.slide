@@ -491,4 +491,5 @@ The WASM file can be referenced in the main html file.
 
 * What's next?
 - Image features detection and matching (to detect similarities inside images)
+- Possible features detection methods: SIFT, SURF (faster)
 - This can be a starting point for facial recognition
