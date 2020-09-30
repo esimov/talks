@@ -1,5 +1,6 @@
 Face detection in Go and Webassembly
-Gophercon, Istanbul 2020
+Gophercon Istanbul, 2020
+Tags: https://gophercon.ist/
 
 Endre Simo
 https://esimov.com
@@ -482,6 +483,7 @@ The WASM file can be referenced in the main html file.
 * Demo time
 - New repository exists to showcase WASM demos using the Pigo libray (this is continuously updated)
 .link https://github.com/esimov/pigo-wasm-demos
+.play wasm.go
 
 * Demo showcase
 .image assets/wasm-demo-1.gif 240 _
