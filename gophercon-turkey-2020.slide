@@ -1,4 +1,4 @@
-Presenting Pigo, the only pure Go face detection library and porting it to Webassembly
+Face detection with Pigo and porting to Webassembly
 Gophercon Istanbul, 2020
 Tags: https://gophercon.ist/
 
