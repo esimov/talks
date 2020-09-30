@@ -1,23 +1,31 @@
-Face detection with Go
-Gophercon India, 2020
-Tags: http://gopherconindia.com/
+Face detection in Go and Webassembly
+Golab.io, 2020
 
 Endre Simo
 https://esimov.com
 https://github.com/esimov
 https://twitter/simo_endre
 
+* About me
+
+* I am ...
+- Software developer and open source enthusiast, tackling with image processing, computer vision, machine learning and procedural graphics as side projects
+- I like the clean and readable code
+- Performance and code optimization addict
+- I consider the concurrency communication model (CSP) the most appealing parts of the Go language
+
 * Agenda
 - What is Pigo?
 - Key features
 - Technical overview
 - Pigo and GoCV (OpenCV) comparision
-- Use cases and integrations
 - Pupils/eyes localization
 - Facial landmark points detection
+- Use cases and integrations
 - Pigo as a shared library
 - Porting Pigo to Webassembly (WASM)
 - Demo time
+- What's next?
 
 * What is Pigo?
 
@@ -29,6 +37,11 @@ https://twitter/simo_endre
 
 * Why it has been developed?
 
+- All of the existing face detection libraries developed in Go are actually bindings (wrappers) around some C/C++ libraries
+- Bindings (using the cgo) most of the times are not cost effective
+- Compiling a C library to Go results in slower build times
+- Cross compilation is almost impossible
+- The desire of a single binary file is just a desire
 - Installing OpenCV sometimes can be daunting
 - OpenCV is huge, impossible to deploy it on small platforms where space constraints are important
 
@@ -130,6 +143,50 @@ _Note_: for in plane rotated faces we are applying the same formula only that we
         return overRow * overCol / (s1*s1 + s2*s2 - overRow*overCol)
     }
 
+* API usage
+- Simple and elegant API
+- Easy integration, cross platform interoperability
+- Posibility to export the detection results to a JSON file
+- Pipeline support
+
+    // Initialize the cascade parameters
+    cParams := pigo.CascadeParams{
+        MinSize:     20,
+        MaxSize:     1000,
+        ShiftFactor: 0.1,
+        ScaleFactor: 1.1,
+
+        ImageParams: pigo.ImageParams{
+            Pixels: pixels,
+            Rows:   rows,
+            Cols:   cols,
+            Dim:    cols,
+        },
+    }
+
+* API usage
+
+    pigo := pigo.NewPigo()
+    // Unpack the binary file. This will return the number of cascade trees,
+    // the tree depth, the threshold and the prediction from tree's leaf nodes.
+    classifier, err := pigo.Unpack(cascadeFile)
+    if err != nil {
+        log.Fatalf("Error reading the cascade file: %s", err)
+    }
+
+    angle := 0.0 // cascade rotation angle. 0.0 is 0 radians and 1.0 is 2*pi radians
+
+    // Run the classifier over the obtained leaf nodes and return the detection results.
+    // The result contains quadruplets representing the row, column, scale and detection score.
+    dets := classifier.RunCascade(cParams, angle)
+
+    // Calculate the intersection over union (IoU) of two clusters.
+    dets = classifier.ClusterDetections(dets, 0.2)
+
+- dets will return the coordinates of the detected faces, eyes and landmark points depending on the provided parameters
+
+    {"face":{"x":422,"y":336,"size":483},"eyes":[{"x":378,"y":267,"size":39},{"x":380,"y":432,"size":40}]}
+
 * End result
 .image assets/pigo_clustering-1024x819.png 550 _
 
@@ -146,30 +203,6 @@ _Note_: for in plane rotated faces we are applying the same formula only that we
 : To have a more accurate benchmark and to measure only the execution time the `b.ResetTimer()` is called to reset the timer so the setup is not counted towards the benchmark.
 : For the above test we were using a sample image with a Nasa crew of 17 persons. Both of the libraries have returned exactly the same results, but Pigo was faster and also the memory allocation was way less compared to GoCV
 
-* Use cases and integrations
-: Pigo has been successfully integrated into the OpenFaaS platform, easing you out from all the tedious work requested by the installation, configuration of the Go language etc., making possible to expose it as an FaaS function. This means once you have an OpenFaaS platform installed on your local machine with only two commands you have a fully working docker image where Pigo can be used as a serverless function.
-
-* OpenFaaS integration
-.image assets/pigo_openfaas.png 350 _
-
-* OpenFaaS integration
-.image assets/pigo_openfaas_result.jpg 300 _
-.link https://github.com/esimov/pigo-openfaas
-
-* OpenFaaS intergation
-.image assets/pigo_openfaas-blur.png 350 _
-
-* OpenFaaS integration
-.image assets/pigo_openfaas-blur_result.jpg 400 _
-.link https://github.com/esimov/pigo-openfaas-faceblur
-.link https://github.com/esimov/stackblur-go
-
-* Other integration
-.image assets/caire-example.png
-
-Avoiding face deformation in Caire
-.link https://github.com/esimov/caire
-
 * Pupils/eyes localization
 
 * Pupils/eyes localization
@@ -178,16 +211,12 @@ Avoiding face deformation in Caire
 * Short overview
 - The implementation pretty much resambles with the face detection method but with few remarkable differences.
 : This means that the classifier used for the pupil/eyes detection is generated based on decision trees and the training data is recursively clustered in this fashion until some termination condition is met.
-- The detection method (as the face detection) is based on tree esembles.
-- As on Pigo face detection, the detection is based on the same pixel intensity binary test.
+- As on the face detection, the detection is based on the same pixel intensity binary test.
 - The output of the regression trees might be noisy
 - We introduce a random perturbation factor during runtime to outweigh the false positive rates on detection
 : There is a problem though: the output of the regression trees might be noisy and unreliable in some special cases like when we are feeding some low quality video frames or images. This is the reason why the method introduces a random perturbation factor during runtime to outweigh the false positive rates on detection. Later on, after the detected face region is classified we sort the perturbations in ascendant order and retrieve the median value of the resulted vector.
-.image assets/puploc_perturbation.jpg 200 _
-
-* Sort the perturbations
-After the face region has been classified we sort the perturbations in ascendant order.
-.image assets/puploc_detector.png 530 _
+.image assets/puploc_perturbation.jpg 160 _
+- After the face region has been classified we sort the perturbations in ascendant order.
 
 * Left/right face detection
 Same formula for left and rigth eye detection. The sign is flipped on the right eye.
@@ -251,6 +280,30 @@ This can be achieved by:
         } else {
             dc += plc.treePreds[lutIdx+1]
         }
+
+* Use cases and integrations
+: Pigo has been successfully integrated into the OpenFaaS platform, easing you out from all the tedious work requested by the installation, configuration of the Go language etc., making possible to expose it as an FaaS function. This means once you have an OpenFaaS platform installed on your local machine with only two commands you have a fully working docker image where Pigo can be used as a serverless function.
+
+* OpenFaaS integration
+.image assets/pigo_openfaas.png 350 _
+
+* OpenFaaS integration
+.image assets/pigo_openfaas_result.jpg 300 _
+.link https://github.com/esimov/pigo-openfaas
+
+* OpenFaaS intergation
+.image assets/pigo_openfaas-blur.png 350 _
+
+* OpenFaaS integration
+.image assets/pigo_openfaas-blur_result.jpg 400 _
+.link https://github.com/esimov/pigo-openfaas-faceblur
+.link https://github.com/esimov/stackblur-go
+
+* Other integration
+.image assets/caire-example.png
+
+Avoiding face deformation in Caire
+.link https://github.com/esimov/caire
 
 * Pigo as a shared library
 
@@ -319,15 +372,16 @@ where the first value represents the number of detected faces and the rest are t
 * Porting Pigo to Webassembly (WASM)
 
 * Pigo and Webassembly
-.image assets/pigowasm.png 300 _
+.image assets/pigowasm.png 500 _
 
 * Motivation
 
-- Running the real time version of Pigo in Python as shared object does not showed the library pure performance
-- Webassembly is an emerging technology with a lot of potential
-- More and more projects are getting ported to Wasm
+- Running Pigo in Python as shared object does not showed the library pure performance
+- Webassembly is an emerging technology targeting the web browser and bringing almost native like performance
+- Many low level languages are already offer support for WASM (C, C++, Rust, Go etc.)
+- More and more projects are getting ported to WASM
 - Go already offer good Webassembly support trough the *syscall/js* package
-- Go *v1.11* was the first version targeting Wasm
+- Go *v1.11* was the first version targeting WASM
 - The API has gone through some refactorings and improvements to be stable starting from *v1.13*
 
 * Considerations to keep in mind
@@ -392,9 +446,9 @@ The *Render()* method will call the underlying JS render method:
             }
         }
 
-* Calling the wasm file
+* Calling the WASM file
 
-The wasm file can be referenced in the main html file.
+The WASM file can be referenced in the main html file.
 
         <script type="text/javascript">
             function fetchAndInstantiate(url, importObject) {
@@ -426,3 +480,15 @@ The wasm file can be referenced in the main html file.
 
 
 * Demo time
+- New repository exists to showcase WASM demos using the Pigo libray (this is continuously updated)
+.link https://github.com/esimov/pigo-wasm-demos
+
+* Demo showcase
+.image assets/wasm-demo-1.gif 240 _
+.image assets/wasm-demo-2.gif 280 _
+
+* Real time demos
+
+* What's next?
+- Image features detection and matching (to detect similarities inside images)
+- This can be a starting point for facial recognition

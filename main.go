@@ -278,8 +278,7 @@ Talks I've given.
 
 ## Talks
 {{range .}}
-- {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}
-	{{if .Venue}} ({{.Venue}}){{end}}
+- {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}{{if .Venue}} ({{.Venue}}){{end}}
 	{{if .Description}}- {{.Description}}{{end}} {{if .ConfLink}}({{.ConfLink}}){{end}}
 	{{if .ResourcesList}}- {{.ResourcesList}}{{end}}
 {{end}}
