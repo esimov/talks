@@ -6,7 +6,7 @@ Talks I've given.
 	- Golab.io, 2020 (https://golab.io/)
 	- [slides](https://talks.godoc.org/github.com/esimov/talks/golabs-2020.slide)
 
-- Face detection with Pigo and porting to Webassembly
+- Porting the Pigo face detection Go library to Webassembly
 	- Gophercon Istanbul, 2020 (https://gophercon.ist/)
 	- [slides](https://talks.godoc.org/github.com/esimov/talks/gophercon-turkey-2020.slide)
 

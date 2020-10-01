@@ -1,4 +1,4 @@
-Face detection with Pigo and porting to Webassembly
+Porting the Pigo face detection Go library to Webassembly
 Gophercon Istanbul, 2020
 Tags: https://gophercon.ist/
 
