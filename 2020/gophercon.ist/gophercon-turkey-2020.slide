@@ -1,6 +1,6 @@
-Face detection in Go and Webassembly
-GoWayFest 4.0, Minsk 2020
-Tags: https://goway.io/
+Porting the Pigo face detection Go library to Webassembly
+Gophercon Istanbul, 2020
+Tags: https://gophercon.ist/
 
 Endre Simo
 https://esimov.com
@@ -492,4 +492,5 @@ The WASM file can be referenced in the main html file.
 
 * What's next?
 - Image features detection and matching (to detect similarities inside images)
+- Possible features detection methods: SIFT, SURF (faster)
 - This can be a starting point for facial recognition
