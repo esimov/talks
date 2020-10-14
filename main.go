@@ -182,9 +182,25 @@ func parsePresentation(path string, base *url.URL) (*presentation, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	confLink := ""
+	resources := []resource{}
+
 	if len(doc.Tags) > 0 {
 		confLink = doc.Tags[0]
+		for idx, link := range doc.Tags {
+			if idx == 0 {
+				resources = append(resources, resource{
+					Kind: slides,
+					Link: base.ResolveReference(u).String(),
+				})
+			} else {
+				resources = append(resources, resource{
+					Kind: blog,
+					Link: link,
+				})
+			}
+		}
 	}
 
 	// Build a presentation to be output as part of the template.
@@ -192,11 +208,8 @@ func parsePresentation(path string, base *url.URL) (*presentation, error) {
 		Title:       doc.Title,
 		Description: doc.Subtitle,
 		Time:        doc.Time,
-		Resources: []resource{{
-			Kind: slides,
-			Link: base.ResolveReference(u).String(),
-		}},
-		ConfLink: confLink,
+		Resources:   resources,
+		ConfLink:    confLink,
 	}, nil
 }
 
@@ -274,9 +287,10 @@ func resolveLink(prefix, rel string) (string, error) {
 // index is the markdown template for the top-level README.md.
 var index = template.Must(template.New("index.md").Parse(strings.TrimSpace(`
 
-Talks I've given.
-
 ## Talks
+
+Talks I have given:
+
 {{range .}}
 - {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}{{if .Venue}} ({{.Venue}}){{end}}
 	{{if .Description}}- {{.Description}}{{end}} {{if .ConfLink}}({{.ConfLink}}){{end}}
