@@ -13,7 +13,6 @@ https://twitter/simo_endre
 - Software developer and open source enthusiast, tackling with image processing, computer vision, machine learning and procedural graphics as side projects
 - I like the clean and readable code
 - Performance and code optimization addict
-- I consider the concurrency communication model (CSP) the most appealing parts of the Go language
 
 * Agenda
 - What is Pigo?
@@ -95,7 +94,7 @@ In the end we should get a cascade with the following structure:
 * Classify regions
 Next we classify the regions based on the parsed binary data.
 
-For classification we are using a simple pixel intensity comparision test in binary format.
+For classification we are using a simple pixel intensity comparison test in binary format.
 
         bintest := func(px1, px2 uint8) int {
             if px1 <= px2 {
@@ -127,7 +126,7 @@ _Note_: for in plane rotated faces we are applying the same formula only that we
 * Cluster detection
 - Due to the noisiness of the underlying pixel data, the detector might produce overlaps in detections.
 .image assets/pigo_output_without_clustering-1024x819.png 300 _
-- The cascade regions are clustered together by aplying an *IoU* (Intersection over Union) formula over the detection results.
+- The cascade regions are clustered together by applying an *IoU* (Intersection over Union) formula over the detection results.
 
 * The intersection over union method
     sort.Sort(det(detections))
@@ -210,7 +209,7 @@ _Note_: for in plane rotated faces we are applying the same formula only that we
 .image assets/pigo_puploc.png 550 _
 
 * Short overview
-- The implementation pretty much resambles with the face detection method but with few remarkable differences.
+- The implementation pretty much resembles with the face detection method but with few remarkable differences.
 : This means that the classifier used for the pupil/eyes detection is generated based on decision trees and the training data is recursively clustered in this fashion until some termination condition is met.
 - As on the face detection, the detection is based on the same pixel intensity binary test.
 - The output of the regression trees might be noisy
