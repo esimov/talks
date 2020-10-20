@@ -31,7 +31,7 @@ https://twitter/simo_endre
 
 * What is Pigo?
 .image assets/pigo_logo.png 300 _
-- Computer vision and machine learning library for face detection, pupils/eyes localization and facial landmark points detection
+- Computer vision library for face detection, pupils/eyes localization and facial landmark points detection
 - The only face detection library in the Go ecosystem developed 100% in Go
 - The implementation is based on _Pixel_ _Intensity_ _Comparison-based_ _Object_ _detection_ paper
 
