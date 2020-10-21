@@ -782,7 +782,7 @@ where the first value represents the number of detected faces and the rest are t
 
 \begin{verbatim}
 go func() {
-    // Since in Go we cannot transfer a 2d array trough an array pointer
+    // Since in Go we cannot transfer a 2d array through an array pointer
     // we have to transform it into 1d array.
     for _, v := range result {
         det = append(det, v...)
@@ -839,7 +839,7 @@ return <-pointCh
 \item Webassembly is an emerging technology targeting the web browser and bringing almost native like performance
 \item Many low level languages are already offer support for WASM (C, C++, Rust, Go etc.)
 \item More and more projects are getting ported to WASM
-\item Go already offer good Webassembly support trough the \textbf{syscall/js} package
+\item Go already offer good Webassembly support through the \textbf{syscall/js} package
 \item Go \textbf{v1.11} was the first version targeting WASM
 \item The API has gone through some refactorings and improvements to be stable starting from \textbf{v1.13}
 \end{itemize}
